@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://ry5rplp0xfoj"]
 
-[ext_resource type="Script" uid="uid://dqrkf4do3et0g" path="res://main.gd" id="1_ig7tw"]
-[ext_resource type="PackedScene" uid="uid://clxcr2le64r6f" path="res://player.tscn" id="2_0xm2m"]
+[ext_resource type="Script" uid="uid://dqrkf4do3et0g" path="res://assets/scripts/main.gd" id="1_ig7tw"]
+[ext_resource type="PackedScene" uid="uid://clxcr2le64r6f" path="res://assets/prefabs/player.tscn" id="2_0xm2m"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_ig7tw")
@@ -20,7 +20,6 @@ spawn_path = NodePath("..")
 offset_top = 206.0
 offset_right = 280.0
 offset_bottom = 408.0
-disabled = true
 text = "JOIN"
 
 [node name="id_prompt" type="LineEdit" parent="."]

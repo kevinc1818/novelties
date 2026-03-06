@@ -32,7 +32,7 @@ func _on_lobby_created(result: int, lobby_id: int):
 		multiplayer.peer_connected.connect(_add_player)
 		multiplayer.peer_disconnected.connect(_remove_player)
 		_add_player()
-	print("Lobby created", lobby_id)
+	print("Lobby created: ", lobby_id)
 		
 func join_lobby(lobby_id : int):
 	is_joining = true
@@ -64,14 +64,11 @@ func _remove_player(id : int):
 func _process(delta):
 	pass
 
-
 func _on_host_button_pressed():
 	host_lobby()
 
-
-func _on_id_prompt_text_changed(new_text):
-	join_button.disabled = (new_text.length == 0) # Replace with function body.
-
+# func _on_id_prompt_text_changed(new_text):
+# 	join_button.disabled = (new_text.length == 0) # Replace with function body.
 
 func _on_join_button_pressed():
 	join_lobby(id_prompt.text.to_int()) # Replace with function body.
