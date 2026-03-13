@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://clwcbrlbsm6en"]
+
+[ext_resource type="Script" uid="uid://cl1lgu0xn48mb" path="res://assets/scripts/enemy.gd" id="1_hlpi3"]
+
+[node name="Enemy" type="Control" unique_id=263446878]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_hlpi3")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1532523707]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(1.2091491, 0.43038177, 0.9156137, 1)
+
+[node name="HealthBar" type="ProgressBar" parent="." unique_id=397006179]
+layout_mode = 0
+offset_top = 103.0
+offset_right = 101.0
+offset_bottom = 130.0

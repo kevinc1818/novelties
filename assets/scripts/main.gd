@@ -46,13 +46,16 @@ func _on_lobby_joined(lobby_id : int, permissions : int, locked : bool, response
 	peer.server_relay = true
 	peer.create_client(Steam.getLobbyOwner(lobby_id))
 	multiplayer.multiplayer_peer = peer
-	
+	multiplayer.peer_connected.connect(_add_player)
+	multiplayer.peer_disconnected.connect(_remove_player)
+	_add_player(multiplayer.get_unique_id())
 	is_joining = false
 		
 func _add_player(id : int = 1):
 	var player = player_scene.instantiate()
 	player.name = str(id)
-	call_deferred("add_child", player)
+	player.set_multiplayer_authority(id)
+	add_child(player)
 
 func _remove_player(id : int):
 	if !self.has_node(str(id)):
@@ -62,6 +65,7 @@ func _remove_player(id : int):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	Steam.run_callbacks()
 	pass
 
 func _on_host_button_pressed():

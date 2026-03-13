@@ -2,6 +2,8 @@ extends CharacterBody2D
 
 const SPEED = 300.0
 
+@onready var synchronizer = $MultiplayerSynchronizer
+
 func _physics_process(delta):
 	if !is_multiplayer_authority():
 		return
