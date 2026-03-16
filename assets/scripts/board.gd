@@ -109,7 +109,7 @@ func _on_submit_pressed():
 func refill_hand():
 	# Simple logic to get back to 5 tiles. 
 	# Later, you can draw randomly from a "Deck" array!
-	var tiles_needed = 5 - hand_area.get_child_count()
+	var tiles_needed = 10 - hand_area.get_child_count()
 	for i in range(tiles_needed):
 		var new_letter = draw_letter()
 		
@@ -189,11 +189,14 @@ func _on_next_fight_pressed():
 	refill_hand()
 	
 func execute_enemy_turn():
-	# For now, the enemy just hits for a flat 5 damage every turn
-	var enemy_damage = 5 
-	print("Enemy attacks you for ", enemy_damage, " damage!")
+	# A list of 5-letter attack words!
+	var attack_words = ["SMASH", "CRUSH", "POUND", "SLASH", "BLAST"]
+	var chosen_word = attack_words.pick_random()
 	
-	player.take_damage(enemy_damage)
+	print("Enemy attacks with: ", chosen_word)
+	
+	# Call the new animation function and wait for it to finish
+	await animate_enemy_attack_sequence(chosen_word)
 	
 func animate_attack_sequence(tiles: Array[LetterTile], total_damage: int):
 	var gather_tween = create_tween().set_parallel(true)
@@ -304,3 +307,67 @@ func spawn_damage_number(amount: int, spawn_pos: Vector2):
 	# 6. Wait for the animation to end, then destroy the label to save memory
 	await tween.finished
 	label.queue_free()
+	
+func animate_enemy_attack_sequence(word: String):
+	var tiles: Array[LetterTile] = []
+	var enemy_center = enemy.global_position + Vector2(50, 50)
+	var player_center = player.global_position + Vector2(50, 50)
+	
+	# PHASE 0: Spawn the tiles out of thin air!
+	for letter in word:
+		var new_tile = tile_scene.instantiate() as LetterTile
+		add_child(new_tile) # Add it straight to the board
+		
+		# Look up the point value, or default to 1 if something goes wrong
+		var value = 1
+		if letter_values.has(letter):
+			value = letter_values[letter]
+			
+		new_tile.setup(letter, value)
+		new_tile.global_position = enemy_center
+		new_tile.disabled = true # Make sure the player can't click the enemy's tiles!
+		
+		tiles.append(new_tile)
+		
+	# PHASE 1: Fan the tiles out over the enemy's head
+	var gather_tween = create_tween().set_parallel(true)
+	var radius = 90.0 
+	
+	for i in range(tiles.size()):
+		var tile = tiles[i]
+		
+		# We want the arc to go over the enemy. 
+		var start_angle = deg_to_rad(-150)
+		var end_angle = deg_to_rad(-30)
+		var percentage = float(i) / float(tiles.size() - 1)
+		var angle = lerp(start_angle, end_angle, percentage)
+		
+		var target_pos = enemy_center + (Vector2.from_angle(angle) * radius)
+		gather_tween.tween_property(tile, "global_position", target_pos, 0.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		
+	await gather_tween.finished
+	await get_tree().create_timer(0.2).timeout
+	
+	# PHASE 2: Shoot them at the player!
+	for tile in tiles:
+		if not is_instance_valid(tile):
+			continue
+			
+		var shoot_tween = create_tween()
+		var tweener = shoot_tween.tween_property(tile, "global_position", player_center, 0.15)
+		if tweener:
+			tweener.set_ease(Tween.EASE_IN)
+			
+		await shoot_tween.finished
+		
+		# --- DECREMENT PLAYER HEALTH HERE ---
+		if is_instance_valid(player) and player.current_hp > 0:
+			player.take_damage(tile.point_value)
+			spawn_damage_number(tile.point_value, player_center)
+			
+		tile.queue_free()
+		await get_tree().create_timer(0.05).timeout
+
+	# Check if the player died after the barrage!
+	if player.current_hp <= 0:
+		print("You were defeated by ", word, "!")
