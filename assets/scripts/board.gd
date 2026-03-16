@@ -80,27 +80,31 @@ func _on_tile_clicked(tile: LetterTile):
 func _on_submit_pressed():
 	var total_damage = 0
 	var played_word = ""
+	var tiles_to_animate: Array[LetterTile] = []
 	
 	# 1. Loop through all the tiles currently in the spelling area
 	for child in spelling_area.get_children():
 		if child is LetterTile:
 			total_damage += child.point_value
 			played_word += child.letter
+			tiles_to_animate.append(child)
 			
-			# Add the letter to the discard pile before destroying the visual tile!
-			discard_pile.append(child.letter) 
-			child.queue_free()
-	
-	
+			# Disable the tile so you can't click it mid-flight!
+			child.disabled = true
+
 	# 3. Check if they actually played anything
 	if total_damage > 0:
 		print("You played: ", played_word, " for ", total_damage, " damage!")
-		enemy.take_damage(total_damage)
+		submit_button.disabled = true
+		
+		await animate_attack_sequence(tiles_to_animate, total_damage)
+
+		submit_button.disabled = false
 		
 		# Optional: Draw new tiles to replace the ones you just used
-		refill_hand()
-		if is_instance_valid(enemy) and enemy.current_hp > 0:
-			execute_enemy_turn()
+		#refill_hand()
+		#if is_instance_valid(enemy) and enemy.current_hp > 0:
+			#execute_enemy_turn()
 
 func refill_hand():
 	# Simple logic to get back to 5 tiles. 
@@ -141,6 +145,7 @@ func _on_enemy_defeated(gold_reward: int):
 	
 	# 3. Show the rewards screen
 	rewards_panel.show()
+	player.hide()
 
 func _on_continue_pressed():
 	# Hide rewards, show upgrade screen
@@ -170,6 +175,7 @@ func _on_next_fight_pressed():
 	# Hide the UI
 	upgrade_panel.hide()
 	upgrade_button.disabled = false
+	player.show()
 	
 	print("Starting next encounter...")
    
@@ -178,7 +184,7 @@ func _on_next_fight_pressed():
 	add_child(new_enemy)
 	enemy = new_enemy
 	enemy.enemy_defeated.connect(_on_enemy_defeated)
-	enemy.position = Vector2(-50, -200)
+	enemy.position = Vector2(200, -200)
 
 	refill_hand()
 	
@@ -188,3 +194,113 @@ func execute_enemy_turn():
 	print("Enemy attacks you for ", enemy_damage, " damage!")
 	
 	player.take_damage(enemy_damage)
+	
+func animate_attack_sequence(tiles: Array[LetterTile], total_damage: int):
+	var gather_tween = create_tween().set_parallel(true)
+	
+	var player_center = player.global_position + Vector2(50, 50)
+	var radius = 90.0 
+	
+	# PHASE 1: Circle the player
+	for i in range(tiles.size()):
+		var tile = tiles[i]
+		
+		if not is_instance_valid(tile):
+			continue
+		
+		var start_global_pos = tile.global_position
+		tile.reparent(self) 
+		tile.global_position = start_global_pos 
+		
+		var angle: float
+		if tiles.size() == 1:
+			angle = -PI / 2.0 
+		else:
+			var start_angle = deg_to_rad(-150)
+			var end_angle = deg_to_rad(-30)
+			var percentage = float(i) / float(tiles.size() - 1)
+			angle = lerp(start_angle, end_angle, percentage)
+			
+		var target_pos = player_center + (Vector2.from_angle(angle) * radius)
+		
+		gather_tween.tween_property(tile, "global_position", target_pos, 0.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		
+	await gather_tween.finished
+	await get_tree().create_timer(0.2).timeout 
+	
+	
+	# PHASE 2: Shoot at the enemy AND deal damage letter-by-letter
+	var last_enemy_pos = Vector2.ZERO
+	if is_instance_valid(enemy):
+		last_enemy_pos = enemy.global_position + Vector2(50, 50)
+		
+	for tile in tiles:
+		if not is_instance_valid(tile):
+			continue
+			
+		var shoot_tween = create_tween()
+		
+		# If the enemy is still alive, keep tracking its exact center. 
+		# If it died mid-attack, we just shoot at the last_enemy_pos!
+		if is_instance_valid(enemy):
+			last_enemy_pos = enemy.global_position + Vector2(50, 50)
+		
+		var tweener = shoot_tween.tween_property(tile, "global_position", last_enemy_pos, 0.15)
+		if tweener:
+			tweener.set_ease(Tween.EASE_IN)
+		
+		# Wait for THIS letter to hit
+		await shoot_tween.finished
+		
+		# --- DECREMENT HEALTH BAR HERE ---
+		# Check if the enemy is still alive before trying to damage it
+		if is_instance_valid(enemy) and enemy.current_hp > 0:
+			enemy.take_damage(tile.point_value)
+			
+		spawn_damage_number(tile.point_value, last_enemy_pos)
+		# ---------------------------------
+		
+		discard_pile.append(tile.letter)
+		tile.queue_free()
+		
+		await get_tree().create_timer(0.05).timeout
+
+	# Phase 3: Clean up and Enemy Turn
+	refill_hand()
+	
+	if is_instance_valid(enemy) and enemy.current_hp > 0:
+		await get_tree().create_timer(0.5).timeout 
+		execute_enemy_turn()
+		
+func spawn_damage_number(amount: int, spawn_pos: Vector2):
+	# 1. Create a brand new text label entirely through code!
+	var label = Label.new()
+	label.text = str(amount)
+	
+	# 2. Make it red and scale it up to be chunky and visible
+	label.modulate = Color(1.0, 0.2, 0.2) 
+	label.scale = Vector2(1.5, 1.5)
+	label.z_index = 100
+	label.custom_minimum_size = Vector2(50, 50)
+	
+	# 4. Add it to the Board
+	add_child(label)
+	
+	# 3. Add a slight random scatter so multiple hits fan out nicely
+	var random_offset = Vector2(randf_range(-25, 25), randf_range(-25, 25))
+	label.global_position = spawn_pos + random_offset
+	
+
+	
+	# 5. Animate it! Float up and fade out at the same time
+	var tween = create_tween().set_parallel(true)
+	
+	# Float straight up by 50 pixels
+	tween.tween_property(label, "global_position", label.global_position + Vector2(0, -50), 0.6).set_ease(Tween.EASE_OUT)
+	
+	# Fade the alpha channel (modulate:a) down to 0 (invisible)
+	tween.tween_property(label, "modulate:a", 0.0, 0.6).set_ease(Tween.EASE_IN)
+	
+	# 6. Wait for the animation to end, then destroy the label to save memory
+	await tween.finished
+	label.queue_free()
