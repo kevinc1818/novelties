@@ -8,6 +8,7 @@ extends Node
 
 @onready var submit_button = $VBoxContainer/SubmitButton
 @onready var enemy = $Enemy
+@onready var player = $Player
 
 var player_gold: int = 0
 
@@ -89,7 +90,7 @@ func _on_submit_pressed():
 			# Add the letter to the discard pile before destroying the visual tile!
 			discard_pile.append(child.letter) 
 			child.queue_free()
-			
+	
 	
 	# 3. Check if they actually played anything
 	if total_damage > 0:
@@ -98,6 +99,8 @@ func _on_submit_pressed():
 		
 		# Optional: Draw new tiles to replace the ones you just used
 		refill_hand()
+		if is_instance_valid(enemy) and enemy.current_hp > 0:
+			execute_enemy_turn()
 
 func refill_hand():
 	# Simple logic to get back to 5 tiles. 
@@ -178,3 +181,10 @@ func _on_next_fight_pressed():
 	enemy.position = Vector2(-50, -200)
 
 	refill_hand()
+	
+func execute_enemy_turn():
+	# For now, the enemy just hits for a flat 5 damage every turn
+	var enemy_damage = 5 
+	print("Enemy attacks you for ", enemy_damage, " damage!")
+	
+	player.take_damage(enemy_damage)

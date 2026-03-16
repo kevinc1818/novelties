@@ -1,24 +1,23 @@
-[gd_scene load_steps=5 format=3 uid="uid://clxcr2le64r6f"]
+[gd_scene format=3 uid="uid://clxcr2le64r6f"]
 
 [ext_resource type="Script" uid="uid://cbx11m2d8rq7r" path="res://assets/scripts/player.gd" id="1_onrkg"]
-[ext_resource type="Texture2D" uid="uid://bwkkdvsatk8on" path="res://icon.svg" id="2_i3pqv"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_hqtel"]
-
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_sweqy"]
-properties/0/path = NodePath(".:position")
-properties/0/spawn = true
-properties/0/replication_mode = 1
-
-[node name="Player" type="CharacterBody2D"]
+[node name="Player" type="Control" unique_id=1491215058]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
 script = ExtResource("1_onrkg")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_hqtel")
+[node name="ColorRect" type="ColorRect" parent="." unique_id=2141736498]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 0
+offset_right = 96.0
+offset_bottom = 96.0
+color = Color(8.230359e-06, 0.85552436, 0.18658406, 1)
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.16796875, 0.16796875)
-texture = ExtResource("2_i3pqv")
-
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_sweqy")
+[node name="HealthBar" type="ProgressBar" parent="." unique_id=218263648]
+layout_mode = 0
+offset_top = 106.0
+offset_right = 100.0
+offset_bottom = 133.0

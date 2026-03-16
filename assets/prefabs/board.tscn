@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://dqs8hbaefkoyn" path="res://assets/scripts/board.gd" id="1_fg4yu"]
 [ext_resource type="PackedScene" uid="uid://de13bbnq581g5" path="res://assets/prefabs/tile.tscn" id="2_16fh4"]
 [ext_resource type="PackedScene" uid="uid://clwcbrlbsm6en" path="res://assets/prefabs/enemy.tscn" id="3_igu0n"]
+[ext_resource type="PackedScene" uid="uid://clxcr2le64r6f" path="res://assets/prefabs/player.tscn" id="4_eji3c"]
 
 [node name="Board" type="Node2D" unique_id=692876262]
 script = ExtResource("1_fg4yu")
@@ -43,9 +44,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -50.0
+offset_left = 206.0
 offset_top = -191.0
-offset_right = -50.0
+offset_right = 206.0
 offset_bottom = -191.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -118,3 +119,9 @@ offset_top = 386.0
 offset_right = 625.0
 offset_bottom = 417.0
 text = "Next Fight"
+
+[node name="Player" parent="." unique_id=1491215058 instance=ExtResource("4_eji3c")]
+offset_left = -291.0
+offset_top = -191.0
+offset_right = -251.0
+offset_bottom = -151.0

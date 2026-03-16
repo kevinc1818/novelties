@@ -1,18 +1,24 @@
-extends CharacterBody2D
+extends Control
+class_name Player
 
-const SPEED = 300.0
+@onready var health_bar = $HealthBar
 
-@onready var synchronizer = $MultiplayerSynchronizer
+var max_hp: int = 50
+var current_hp: int = 50
 
-func _physics_process(delta):
-	if !is_multiplayer_authority():
-		return
+func _ready():
+	health_bar.max_value = max_hp
+	health_bar.value = current_hp
+
+func take_damage(amount: int):
+	current_hp -= amount
+	health_bar.value = current_hp
 	
-	var direction = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
-	if direction:
-		velocity = direction * SPEED
-	else:
-		velocity.x = move_toward(velocity.x, 0, SPEED)
-		velocity.y = move_toward(velocity.y, 0, SPEED)
+	print("Player took ", amount, " damage! HP is now: ", current_hp)
+	
+	if current_hp <= 0:
+		die()
 
-	move_and_slide()
+func die():
+	print("Game Over! The player has been defeated.")
+	# Later, we can make this pull up a "Game Over" screen!
