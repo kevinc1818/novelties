@@ -1,46 +1,24 @@
 extends Node
 class_name DeckManager
 
-var letter_values: Dictionary = {
-  "A": 1,
-  "B": 3,
-  "C": 3,
-  "D": 2,
-  "E": 1,
-  "F": 4,
-  "G": 2,
-  "H": 4,
-  "I": 1,
-  "J": 8,
-  "K": 5,
-  "L": 1,
-  "M": 3,
-  "N": 1,
-  "O": 1,
-  "P": 3,
-  "Q": 10,
-  "R": 1,
-  "S": 1,
-  "T": 1,
-  "U": 1,
-  "V": 4,
-  "W": 4,
-  "X": 8,
-  "Y": 4,
-  "Z": 10
-}
+@export var config: CharacterConfig
 
+var letter_values: Dictionary = {}
 var draw_pile: Array[String] = []
 var discard_pile: Array[String] = []
 
 
 func _ready():
-  setup_deck()
+  if config:
+    letter_values = config.letter_values.duplicate()
+    setup_deck(config.starting_words)
 
 
-func setup_deck():
-  var starting_letters: Array[String] = ["A", "A", "E", "E", "I", "O", "R", "R", "S", "S", "T", "T", "L", "N", "P"]
-  draw_pile = starting_letters.duplicate()
+func setup_deck(starting_words: Array[String]):
+  draw_pile = []
+  for word in starting_words:
+    for letter in word:
+      draw_pile.append(letter.to_upper())
   draw_pile.shuffle()
 
 

@@ -4,22 +4,15 @@ class_name HandManager
 signal word_submitted(tiles: Array[LetterTile], damage: int)
 signal invalid_word
 
-var deck_manager: DeckManager
-var hand_area: HBoxContainer
-var spelling_area: HBoxContainer
-var tile_scene: PackedScene
+@export var deck_manager: DeckManager
+@export var hand_area: HBoxContainer
+@export var spelling_area: HBoxContainer
+@export var submit_button: Button
+@export var tile_scene: PackedScene
 
 
-func setup(
-  p_deck_manager: DeckManager,
-  p_hand_area: HBoxContainer,
-  p_spelling_area: HBoxContainer,
-  p_tile_scene: PackedScene,
-):
-  deck_manager = p_deck_manager
-  hand_area = p_hand_area
-  spelling_area = p_spelling_area
-  tile_scene = p_tile_scene
+func _ready():
+  update_submit_indicator()
 
 
 func refill_hand():
@@ -57,6 +50,14 @@ func _spawn_tile(letter: String, value: int):
   new_tile.tile_clicked.connect(_on_tile_clicked)
 
 
+func update_submit_indicator():
+  var word = ""
+  for child in spelling_area.get_children():
+    if child is LetterTile:
+      word += child.letter
+  submit_button.disabled = word.length() == 0 or not WordDictionary.is_valid(word)
+
+
 func _on_tile_clicked(tile: LetterTile):
   if tile.is_in_hand:
     tile.reparent(spelling_area)
@@ -64,3 +65,4 @@ func _on_tile_clicked(tile: LetterTile):
   else:
     tile.reparent(hand_area)
     tile.is_in_hand = true
+  update_submit_indicator()

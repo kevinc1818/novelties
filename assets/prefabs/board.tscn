@@ -4,27 +4,44 @@
 [ext_resource type="PackedScene" uid="uid://de13bbnq581g5" path="res://assets/prefabs/tile.tscn" id="2_16fh4"]
 [ext_resource type="PackedScene" uid="uid://clwcbrlbsm6en" path="res://assets/prefabs/enemy.tscn" id="3_igu0n"]
 [ext_resource type="PackedScene" uid="uid://clxcr2le64r6f" path="res://assets/prefabs/player.tscn" id="4_eji3c"]
-[ext_resource type="Script" uid="uid://bm4k9vf3nxp2c" path="res://assets/scripts/player/deck_manager.gd" id="5_deck1"]
+[ext_resource type="Resource" uid="uid://byjtuxlhh4k6j" path="res://assets/characters/harry.tres" id="4_os0cg"]
+[ext_resource type="Script" uid="uid://bm4lavf3nxp2c" path="res://assets/scripts/player/deck_manager.gd" id="5_deck1"]
 [ext_resource type="Script" uid="uid://ch8jt5wq6ry1s" path="res://assets/scripts/player/hand_manager.gd" id="6_hand1"]
 [ext_resource type="Script" uid="uid://dk2lp7ms4nt8v" path="res://assets/scripts/combat/combat_animator.gd" id="7_anim1"]
-[ext_resource type="Script" uid="uid://ev3oq9bx1wf5h" path="res://assets/scripts/rewards/reward_system.gd" id="8_rwrd1"]
+[ext_resource type="Script" uid="uid://1os57ephpkep" path="res://assets/scripts/rewards/reward_system.gd" id="8_rwrd1"]
 
 [node name="Board" type="Node2D" unique_id=692876262]
 script = ExtResource("1_fg4yu")
-tile_scene = ExtResource("2_16fh4")
 enemy_scene = ExtResource("3_igu0n")
 
 [node name="DeckManager" type="Node" parent="." unique_id=1234567890]
 script = ExtResource("5_deck1")
+config = ExtResource("4_os0cg")
 
-[node name="HandManager" type="Node" parent="." unique_id=987654321]
+[node name="HandManager" type="Node" parent="." unique_id=987654321 node_paths=PackedStringArray("deck_manager", "hand_area", "spelling_area", "submit_button")]
 script = ExtResource("6_hand1")
+deck_manager = NodePath("../DeckManager")
+hand_area = NodePath("../VBoxContainer/HandArea")
+spelling_area = NodePath("../VBoxContainer/SpellingArea")
+submit_button = NodePath("../VBoxContainer/SubmitButton")
+tile_scene = ExtResource("2_16fh4")
 
-[node name="CombatAnimator" type="Node" parent="." unique_id=111222333]
+[node name="CombatAnimator" type="Node" parent="." unique_id=111222333 node_paths=PackedStringArray("player", "deck_manager")]
 script = ExtResource("7_anim1")
+player = NodePath("../Player")
+tile_scene = ExtResource("2_16fh4")
+deck_manager = NodePath("../DeckManager")
 
-[node name="RewardSystem" type="Node" parent="." unique_id=444555666]
+[node name="RewardSystem" type="Node" parent="." unique_id=444555666 node_paths=PackedStringArray("deck_manager", "rewards_panel", "gold_label", "continue_button", "upgrade_panel", "upgrade_button", "next_fight_button", "player")]
 script = ExtResource("8_rwrd1")
+deck_manager = NodePath("../DeckManager")
+rewards_panel = NodePath("../RewardsPanel")
+gold_label = NodePath("../RewardsPanel/GoldLabel")
+continue_button = NodePath("../RewardsPanel/ContinueButton")
+upgrade_panel = NodePath("../UpgradePanel")
+upgrade_button = NodePath("../UpgradePanel/UpgradeButton")
+next_fight_button = NodePath("../UpgradePanel/NextFightButton")
+player = NodePath("../Player")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1504996999]
 anchors_preset = 7

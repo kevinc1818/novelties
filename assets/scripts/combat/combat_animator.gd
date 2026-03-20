@@ -4,17 +4,11 @@ class_name CombatAnimator
 signal player_attack_finished
 signal enemy_attack_finished
 
-var player: Player
+@export var player: Player
+@export var tile_scene: PackedScene
+@export var deck_manager: DeckManager
+
 var enemy: Enemy
-var tile_scene: PackedScene
-var deck_manager: DeckManager
-
-
-func setup(p_player: Player, p_enemy: Enemy, p_tile_scene: PackedScene, p_deck_manager: DeckManager):
-  player = p_player
-  enemy = p_enemy
-  tile_scene = p_tile_scene
-  deck_manager = p_deck_manager
 
 
 func set_enemy(new_enemy: Enemy):
@@ -43,8 +37,11 @@ func animate_player_attack(tiles: Array[LetterTile]):
       angle = lerp(deg_to_rad(-150), deg_to_rad(-30), percentage)
 
     var target_pos = player_center + (Vector2.from_angle(angle) * radius)
-    gather_tween.tween_property(tile, "global_position", target_pos, 0.5).set_trans(Tween.TRANS_SINE).set_ease(
-      Tween.EASE_OUT
+    (
+      gather_tween
+      . tween_property(tile, "global_position", target_pos, 0.5)
+      . set_trans(Tween.TRANS_SINE)
+      . set_ease(Tween.EASE_OUT)
     )
 
   await gather_tween.finished
@@ -100,8 +97,11 @@ func animate_enemy_attack():
     var percentage = float(i) / float(tiles.size() - 1)
     var angle = lerp(deg_to_rad(-150), deg_to_rad(-30), percentage)
     var target_pos = enemy_center + (Vector2.from_angle(angle) * radius)
-    gather_tween.tween_property(tile, "global_position", target_pos, 0.5).set_trans(Tween.TRANS_SINE).set_ease(
-      Tween.EASE_OUT
+    (
+      gather_tween
+      . tween_property(tile, "global_position", target_pos, 0.5)
+      . set_trans(Tween.TRANS_SINE)
+      . set_ease(Tween.EASE_OUT)
     )
 
   await gather_tween.finished
@@ -139,7 +139,11 @@ func _spawn_damage_number(amount: int, spawn_pos: Vector2):
   label.global_position = spawn_pos + Vector2(randf_range(-25, 25), randf_range(-25, 25))
 
   var tween = create_tween().set_parallel(true)
-  tween.tween_property(label, "global_position", label.global_position + Vector2(0, -50), 0.6).set_ease(Tween.EASE_OUT)
+  (
+    tween
+    . tween_property(label, "global_position", label.global_position + Vector2(0, -50), 0.6)
+    . set_ease(Tween.EASE_OUT)
+  )
   tween.tween_property(label, "modulate:a", 0.0, 0.6).set_ease(Tween.EASE_IN)
   await tween.finished
   label.queue_free()
