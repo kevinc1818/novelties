@@ -1,12 +1,8 @@
 [gd_scene format=3 uid="uid://ry5rplp0xfoj"]
 
-[ext_resource type="Script" uid="uid://dqrkf4do3et0g" path="res://assets/scripts/main.gd" id="1_ig7tw"]
-[ext_resource type="PackedScene" uid="uid://clxcr2le64r6f" path="res://assets/prefabs/player.tscn" id="2_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://do2rk6sk3ad7m" path="res://assets/prefabs/board.tscn" id="3_dfgan"]
 
 [node name="Main" type="Node2D" unique_id=977774929]
-script = ExtResource("1_ig7tw")
-player_scene = ExtResource("2_0xm2m")
 
 [node name="host_button" type="Button" parent="." unique_id=463506134]
 visible = false
@@ -34,7 +30,7 @@ offset_bottom = 440.0
 placeholder_text = "Lobby ID"
 
 [node name="Board" parent="." unique_id=692876262 instance=ExtResource("3_dfgan")]
-position = Vector2(574, 419)
+position = Vector2(622, 352)
 
 [connection signal="pressed" from="host_button" to="." method="_on_host_button_pressed"]
 [connection signal="pressed" from="join_button" to="." method="_on_join_button_pressed"]

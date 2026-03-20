@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://de13bbnq581g5"]
 
-[ext_resource type="Script" uid="uid://cihnskf16ubiu" path="res://assets/scripts/tile.gd" id="1_kcd6f"]
+[ext_resource type="Script" uid="uid://cihnskf16ubiu" path="res://assets/scripts/player/tile.gd" id="1_kcd6f"]
 
 [node name="Tile" type="Button" unique_id=1859484857]
 custom_minimum_size = Vector2(64, 64)

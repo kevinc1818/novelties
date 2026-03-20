@@ -19,6 +19,10 @@ run/main_scene="uid://ry5rplp0xfoj"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+WordDictionary="*res://assets/scripts/word_dictionary.gd"
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"

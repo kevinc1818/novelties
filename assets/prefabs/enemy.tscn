@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://clwcbrlbsm6en"]
 
-[ext_resource type="Script" uid="uid://cl1lgu0xn48mb" path="res://assets/scripts/enemy.gd" id="1_hlpi3"]
+[ext_resource type="Script" uid="uid://cl1lgu0xn48mb" path="res://assets/scripts/enemy/enemy.gd" id="1_hlpi3"]
 
 [node name="Enemy" type="Control" unique_id=263446878]
 layout_mode = 3

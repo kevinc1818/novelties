@@ -1,14 +1,30 @@
 [gd_scene format=3 uid="uid://do2rk6sk3ad7m"]
 
-[ext_resource type="Script" uid="uid://dqs8hbaefkoyn" path="res://assets/scripts/board.gd" id="1_fg4yu"]
+[ext_resource type="Script" uid="uid://dqs8hbaefkoyn" path="res://assets/scripts/combat/combat_state.gd" id="1_fg4yu"]
 [ext_resource type="PackedScene" uid="uid://de13bbnq581g5" path="res://assets/prefabs/tile.tscn" id="2_16fh4"]
 [ext_resource type="PackedScene" uid="uid://clwcbrlbsm6en" path="res://assets/prefabs/enemy.tscn" id="3_igu0n"]
 [ext_resource type="PackedScene" uid="uid://clxcr2le64r6f" path="res://assets/prefabs/player.tscn" id="4_eji3c"]
+[ext_resource type="Script" uid="uid://bm4k9vf3nxp2c" path="res://assets/scripts/player/deck_manager.gd" id="5_deck1"]
+[ext_resource type="Script" uid="uid://ch8jt5wq6ry1s" path="res://assets/scripts/player/hand_manager.gd" id="6_hand1"]
+[ext_resource type="Script" uid="uid://dk2lp7ms4nt8v" path="res://assets/scripts/combat/combat_animator.gd" id="7_anim1"]
+[ext_resource type="Script" uid="uid://ev3oq9bx1wf5h" path="res://assets/scripts/rewards/reward_system.gd" id="8_rwrd1"]
 
 [node name="Board" type="Node2D" unique_id=692876262]
 script = ExtResource("1_fg4yu")
 tile_scene = ExtResource("2_16fh4")
 enemy_scene = ExtResource("3_igu0n")
+
+[node name="DeckManager" type="Node" parent="." unique_id=1234567890]
+script = ExtResource("5_deck1")
+
+[node name="HandManager" type="Node" parent="." unique_id=987654321]
+script = ExtResource("6_hand1")
+
+[node name="CombatAnimator" type="Node" parent="." unique_id=111222333]
+script = ExtResource("7_anim1")
+
+[node name="RewardSystem" type="Node" parent="." unique_id=444555666]
+script = ExtResource("8_rwrd1")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1504996999]
 anchors_preset = 7
