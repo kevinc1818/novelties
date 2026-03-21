@@ -23,7 +23,7 @@ func _ready():
 
 
 func _on_word_submitted(tiles: Array[LetterTile], _damage: int):
-  hand_manager.submit_button.disabled = true
+  hand_manager.set_input_locked(true)
   combat_animator.animate_player_attack(tiles)
 
 
@@ -33,15 +33,15 @@ func _on_player_attack_finished():
     await get_tree().create_timer(0.5).timeout
     combat_animator.animate_enemy_attack()
   else:
-    hand_manager.update_submit_indicator()
+    hand_manager.set_input_locked(false)
 
 
 func _on_enemy_attack_finished():
-  hand_manager.update_submit_indicator()
+  hand_manager.set_input_locked(false)
 
 
 func _on_next_fight():
-  hand_manager.update_submit_indicator()
+  hand_manager.set_input_locked(false)
   var new_enemy = enemy_scene.instantiate() as Enemy
   add_child(new_enemy)
   enemy = new_enemy

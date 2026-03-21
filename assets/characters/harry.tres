@@ -32,4 +32,4 @@ letter_values = {
 "Y": 4,
 "Z": 10
 }
-starting_words = Array[String](["wizard", "magic", "boy", "prophecy", "hero"])
+starting_words = Array[String](["wizard", "magic", "glasses", "prophecy", "hero"])
