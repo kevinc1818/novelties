@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://ch8jt5wq6ry1s" path="res://assets/scripts/player/hand_manager.gd" id="6_hand1"]
 [ext_resource type="Script" uid="uid://dk2lp7ms4nt8v" path="res://assets/scripts/combat/combat_animator.gd" id="7_anim1"]
 [ext_resource type="Script" uid="uid://1os57ephpkep" path="res://assets/scripts/rewards/reward_system.gd" id="8_rwrd1"]
+[ext_resource type="PackedScene" uid="uid://c4oxatrosuhwu" path="res://assets/prefabs/pile_display.tscn" id="9_piled"]
 
 [node name="Board" type="Node2D" unique_id=692876262]
 script = ExtResource("1_fg4yu")
@@ -158,3 +159,28 @@ offset_left = -291.0
 offset_top = -191.0
 offset_right = -251.0
 offset_bottom = -151.0
+
+[node name="DrawPileDisplay" parent="." unique_id=800000001 node_paths=PackedStringArray("deck_manager") instance=ExtResource("9_piled")]
+layout_mode = 3
+anchors_preset = 15
+offset_left = -553.0
+offset_top = 129.0
+offset_right = -530.0
+offset_bottom = 129.0
+grow_horizontal = 2
+grow_vertical = 2
+deck_manager = NodePath("../DeckManager")
+tile_scene = ExtResource("2_16fh4")
+
+[node name="DiscardPileDisplay" parent="." unique_id=800000002 node_paths=PackedStringArray("deck_manager") instance=ExtResource("9_piled")]
+layout_mode = 3
+anchors_preset = 15
+offset_left = 447.0
+offset_top = 129.0
+offset_right = 447.0
+offset_bottom = 129.0
+grow_horizontal = 2
+grow_vertical = 2
+deck_manager = NodePath("../DeckManager")
+pile_type = 1
+tile_scene = ExtResource("2_16fh4")

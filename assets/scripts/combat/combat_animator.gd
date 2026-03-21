@@ -67,7 +67,6 @@ func animate_player_attack(tiles: Array[LetterTile]):
     if is_instance_valid(enemy) and enemy.current_hp > 0:
       enemy.take_damage(tile.point_value)
     _spawn_damage_number(tile.point_value, last_enemy_pos)
-    deck_manager.discard_letter(tile.letter)
     tile.queue_free()
     await get_tree().create_timer(0.05).timeout
 

@@ -33,7 +33,7 @@ func set_input_locked(locked: bool):
 func refill_hand():
   var tiles_needed = 10 - hand_area.get_child_count()
   for i in range(tiles_needed):
-    var new_letter = deck_manager.draw_letter()
+    var new_letter = deck_manager.draw_to_hand()
     if new_letter != "":
       _spawn_tile(new_letter, deck_manager.letter_values[new_letter])
 
@@ -51,6 +51,7 @@ func try_submit():
       child.disabled = true
 
   if total_damage > 0 and WordDictionary.is_valid(played_word):
+    deck_manager.submit_in_play()
     word_submitted.emit(tiles, total_damage)
   elif total_damage > 0:
     invalid_word.emit()
@@ -95,6 +96,7 @@ func _handle_type(letter: String):
     return
   tile.reparent(spelling_area)
   tile.is_in_hand = false
+  deck_manager.play_from_hand(tile.letter)
   update_submit_indicator()
 
 
@@ -130,6 +132,7 @@ func _handle_backspace():
     return
   last_tile.reparent(hand_area)
   last_tile.is_in_hand = true
+  deck_manager.recall_to_hand(last_tile.letter)
   update_submit_indicator()
 
 
@@ -139,6 +142,7 @@ func _commit_peek():
     _peek_tween = null
   _peek_tile.reparent(spelling_area)
   _peek_tile.is_in_hand = false
+  deck_manager.play_from_hand(_peek_tile.letter)
   _peek_tile = null
   _peek_letter = ""
   _peek_index = 0
@@ -206,7 +210,9 @@ func _on_tile_clicked(tile: LetterTile):
   if tile.is_in_hand:
     tile.reparent(spelling_area)
     tile.is_in_hand = false
+    deck_manager.play_from_hand(tile.letter)
   else:
     tile.reparent(hand_area)
     tile.is_in_hand = true
+    deck_manager.recall_to_hand(tile.letter)
   update_submit_indicator()
